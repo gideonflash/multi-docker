@@ -18,3 +18,15 @@ after_success:
   - docker push gideonflash/multi-nginx
   - docker push gideonflash/multi-server
   - docker push gideonflash/multi-worker
+
+deploy:
+  provider: elasticbeanstalk
+  region: "eu-west-2"
+  app: "multi-docker"
+  env: "Multidocker-env"
+  bucket_name: elasticbeanstalk-eu-west-2-862366749678
+  bucket_path: "docker-multi"
+  on:
+    branch: main
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY

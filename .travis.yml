@@ -1,0 +1,20 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t gideonflash/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true gideonflash/react-test npm test
+
+after_success:
+  - docker build -t gideonflash/multi-client ./client
+  - docker build -t gideonflash/multi-nginx ./nginx
+  - docker build -t gideonflash/multi-server ./server
+  - docker build -t gideonflash/multi-worker ./worker
+  - echo $DOCKER_PASSWORD | docker login -u $DOCKER_ID --password-stdin
+  - docker push gideonflash/multi-client
+  - docker push gideonflash/multi-nginx
+  - docker push gideonflash/multi-server
+  - docker push gideonflash/multi-worker
